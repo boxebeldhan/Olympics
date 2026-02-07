@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Skating Predictions - Milano Cortina 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a1931 0%, #1e3c72 50%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* ADMIN PASSWORD - Line 22 */
+        /* To change password, find line 551 and change 'Han123' to your new password */
+
+        .header-banner {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .olympics-logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #0a1931;
+            margin-bottom: 10px;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .admin-toggle {
+            margin-top: 15px;
+        }
+
+        .admin-btn {
+            padding: 10px 20px;
+            background: #ffc107;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .admin-btn:hover {
+            background: #ffb300;
+            transform: translateY(-2px);
+        }
+
+        .admin-panel {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            background: rgba(255, 249, 230, 0.98);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 3px solid #ffc107;
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            border: 2px solid #ffe066;
+        }
+
+        .admin-title {
+            font-size: 24px;
+            color: #0a1931;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #0a1931;
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0a1931;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="datetime-local"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e7ee;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #1e3c72;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+        }
+
+        .event-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e7ee;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .event-card:hover {
+            border-color: #1e3c72;
+            transform: translateX(5px);
+        }
+
+        .event-card.active {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+
+        .event-card.closed {
+            opacity: 0.6;
+        }
+
+        .event-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0a1931;
+            margin-bottom: 8px;
+        }
+
+        .event-meta {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .event-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .event-status.open {
+            background: #28a745;
+            color: white;
+        }
+
+        .event-status.closed {
+            background: #dc3545;
+            color: white;
+        }
+
+        .event-status.completed {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .leaderboard {
+            list-style: none;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            border: 2px solid #e0e7ee;
+        }
+
+        .leaderboard-item.top3 {
+            border-color: #ffd700;
+            background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+        }
+
+        .leaderboard-rank {
+            font-size: 24px;
+            font-weight: 700;
+            width: 50px;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .leaderboard-score {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        .prediction-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #e0e7ee;
+        }
+
+        .prediction-item.correct {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+
+        .prediction-name {
+            font-weight: 700;
+            color: #0a1931;
+        }
+
+        .prediction-answer {
+            color: #1e3c72;
+            font-weight: 600;
+        }
+
+        .countdown-timer {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1e3c72;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .message {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            background: rgba(30, 60, 114, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .winners-section {
+            padding: 40px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.5);
+        }
+
+        .winner-name {
+            font-size: 28px;
+            color: #1e3c72;
+            margin: 12px 0;
+            font-weight: 700;
+            background: white;
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confetti"></canvas>
+    
+    <div class="header-banner">
+        <div class="olympics-logo">🏂⛸️🎿</div>
+        <h1>Speed Skating Predictions</h1>
+        <div style="color: #666; font-size: 18px;">Milano Cortina 2026 Olympics</div>
+        <div class="admin-toggle">
+            <button class="admin-btn" onclick="toggleAdmin()">🔐 Admin Panel</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-section">
+            <h2 class="admin-title">🔐 Admin Login</h2>
+            <div id="adminLogin">
+                <div class="form-group">
+                    <label>Admin Password:</label>
+                    <input type="password" id="adminPassword" placeholder="Enter admin password">
+                </div>
+                <button class="btn btn-primary" onclick="login()">Login</button>
+                <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                    Contact admin for password
+                </div>
+            </div>
+            <div id="adminControls" style="display: none;">
+                <p style="color: #28a745; font-weight: 600; margin-bottom: 20px;">✅ Logged in as Admin</p>
+                <button class="btn btn-danger" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div id="adminContent" style="display: none;">
+            <!-- Create New Event -->
+            <div class="admin-section">
+                <h2 class="admin-title">➕ Create New Event</h2>
+                <div class="form-group">
+                    <label>Event Name:</label>
+                    <input type="text" id="newEventName" placeholder="e.g., Women's 3000m">
+                </div>
+                <div class="form-group">
+                    <label>Question:</label>
+                    <input type="text" id="newEventQuestion" placeholder="e.g., Who will finish 3rd?">
+                </div>
+                <div class="form-group">
+                    <label>Deadline (CET):</label>
+                    <input type="datetime-local" id="newEventDeadline">
+                </div>
+                <button class="btn btn-success" onclick="createEvent()">Create Event</button>
+            </div>
+
+            <!-- Announce Results -->
+            <div class="admin-section">
+                <h2 class="admin-title">🏆 Announce Results for Current Event</h2>
+                <div id="resultForm">
+                    <div class="form-group">
+                        <label>Correct Answer:</label>
+                        <input type="text" id="correctAnswer" placeholder="Enter the correct answer">
+                    </div>
+                    <button class="btn btn-success" onclick="announceResults()">🎉 Announce Winners</button>
+                </div>
+            </div>
+
+            <!-- Reset Data -->
+            <div class="admin-section">
+                <h2 class="admin-title">⚠️ Danger Zone</h2>
+                <button class="btn btn-danger" onclick="resetAllData()">Reset All Data</button>
+                <div style="margin-top: 10px; font-size: 14px; color: #dc3545;">
+                    This will delete all events, predictions, and scores!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Events List -->
+        <div class="card full-width">
+            <h2 class="section-title">📅 Events</h2>
+            <div id="eventsList"></div>
+        </div>
+
+        <!-- Current Event -->
+        <div class="card">
+            <div id="currentEvent"></div>
+        </div>
+
+        <!-- Predictions -->
+        <div class="card">
+            <h2 class="section-title">📊 Predictions</h2>
+            <div id="predictionsList"></div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="card full-width">
+            <h2 class="section-title">🏆 Overall Leaderboard</h2>
+            <ul class="leaderboard" id="leaderboard"></ul>
+        </div>
+    </div>
+
+    <div id="winnersSection"></div>
+
+    <script>
+        // Data structure
+        let events = JSON.parse(localStorage.getItem('skating_events')) || [];
+        let predictions = JSON.parse(localStorage.getItem('skating_predictions')) || {};
+        let scores = JSON.parse(localStorage.getItem('skating_scores')) || {};
+        let currentEventId = localStorage.getItem('skating_current_event');
+        let isAdmin = sessionStorage.getItem('skating_admin') === 'true';
+        let countdownInterval;
+
+        /* ⚠️ ADMIN PASSWORD - CHANGE THIS LINE TO UPDATE PASSWORD */
+        const ADMIN_PASSWORD = 'Han123';
+
+        // Initialize with default event if no events exist
+        if (events.length === 0) {
+            const defaultEvent = {
+                id: Date.now(),
+                name: "Women's 3000m Speed Skating",
+                question: "Who will finish 3rd? 🥉",
+                deadline: new Date(Date.UTC(2026, 1, 7, 15, 0, 0)).getTime(), // Feb 7, 2026, 16:00 CET
+                status: 'open',
+                result: null,
+                created: Date.now()
+            };
+            events = [defaultEvent];
+            currentEventId = defaultEvent.id;
+            predictions[defaultEvent.id] = [];
+            localStorage.setItem('skating_events', JSON.stringify(events));
+            localStorage.setItem('skating_predictions', JSON.stringify(predictions));
+            localStorage.setItem('skating_current_event', currentEventId);
+        }
+
+        // Admin functions
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('active');
+        }
+
+        function login() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                sessionStorage.setItem('skating_admin', 'true');
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminControls').style.display = 'block';
+                document.getElementById('adminContent').style.display = 'block';
+                showMessage('✅ Admin login successful!', 'success');
+            } else {
+                showMessage('❌ Incorrect password!', 'error');
+            }
+        }
+
+        function logout() {
+            isAdmin = false;
+            sessionStorage.removeItem('skating_admin');
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('adminControls').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function createEvent() {
+            const name = document.getElementById('newEventName').value.trim();
+            const question = document.getElementById('newEventQuestion').value.trim();
+            const deadline = document.getElementById('newEventDeadline').value;
+
+            if (!name || !question || !deadline) {
+                showMessage('⚠️ Please fill in all fields!', 'error');
+                return;
+            }
+
+            const event = {
+                id: Date.now(),
+                name: name,
+                question: question,
+                deadline: new Date(deadline).getTime(),
+                status: 'open',
+                result: null,
+                created: Date.now()
+            };
+
+            events.push(event);
+            currentEventId = event.id;
+            predictions[event.id] = [];
+            
+            saveData();
+            
+            document.getElementById('newEventName').value = '';
+            document.getElementById('newEventQuestion').value = '';
+            document.getElementById('newEventDeadline').value = '';
+            
+            showMessage('✅ Event created successfully!', 'success');
+            render();
+        }
+
+        function selectEvent(eventId) {
+            currentEventId = eventId;
+            localStorage.setItem('skating_current_event', eventId);
+            render();
+        }
+
+        function submitPrediction() {
+            const event = getCurrentEvent();
+            if (!event) {
+                showMessage('⚠️ No active event!', 'error');
+                return;
+            }
+
+            if (Date.now() >= event.deadline) {
+                showMessage('⛔ Predictions are closed!', 'error');
+                return;
+            }
+
+            const name = document.getElementById('participantName').value.trim();
+            const answer = document.getElementById('predictionAnswer').value.trim();
+
+            if (!name || !answer) {
+                showMessage('⚠️ Please fill in both fields!', 'error');
+                return;
+            }
+
+            // Check if user already predicted for this event
+            const existingIndex = predictions[event.id].findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+            
+            const prediction = {
+                name: name,
+                answer: answer,
+                timestamp: Date.now()
+            };
+
+            if (existingIndex >= 0) {
+                predictions[event.id][existingIndex] = prediction;
+                showMessage('✅ Prediction updated!', 'success');
+            } else {
+                predictions[event.id].push(prediction);
+                showMessage('✅ Prediction submitted!', 'success');
+            }
+
+            saveData();
+            document.getElementById('participantName').value = '';
+            document.getElementById('predictionAnswer').value = '';
+            render();
+        }
+
+        function announceResults() {
+            const event = getCurrentEvent();
+            if (!event) return;
+
+            const answer = document.getElementById('correctAnswer').value.trim();
+            if (!answer) {
+                showMessage('⚠️ Please enter the correct answer!', 'error');
+                return;
+            }
+
+            event.result = answer;
+            event.status = 'completed';
+
+            // Update scores
+            const normalize = (str) => str.toLowerCase().trim().replace(/\s+/g, ' ');
+            const winners = predictions[event.id].filter(p => normalize(p.answer) === normalize(answer));
+
+            winners.forEach(winner => {
+                if (!scores[winner.name]) {
+                    scores[winner.name] = 0;
+                }
+                scores[winner.name]++;
+            });
+
+            saveData();
+            showMessage('🎉 Results announced!', 'success');
+            
+            if (winners.length > 0) {
+                launchConfetti();
+            }
+            
+            render();
+        }
+
+        function resetAllData() {
+            if (confirm('⚠️ Are you ABSOLUTELY SURE you want to delete ALL data? This cannot be undone!')) {
+                if (confirm('This will delete all events, predictions, and scores. Last chance to cancel!')) {
+                    localStorage.removeItem('skating_events');
+                    localStorage.removeItem('skating_predictions');
+                    localStorage.removeItem('skating_scores');
+                    localStorage.removeItem('skating_current_event');
+                    events = [];
+                    predictions = {};
+                    scores = {};
+                    currentEventId = null;
+                    showMessage('✅ All data reset!', 'success');
+                    render();
+                }
+            }
+        }
+
+        // Helper functions
+        function getCurrentEvent() {
+            return events.find(e => e.id == currentEventId);
+        }
+
+        function saveData() {
+            localStorage.setItem('skating_events', JSON.stringify(events));
+            localStorage.setItem('skating_predictions', JSON.stringify(predictions));
+            localStorage.setItem('skating_scores', JSON.stringify(scores));
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            document.body.appendChild(messageDiv);
+            setTimeout(() => messageDiv.remove(), 4000);
+        }
+
+        function updateCountdown() {
+            const event = getCurrentEvent();
+            if (!event) return;
+
+            const now = Date.now();
+            const diff = event.deadline - now;
+
+            if (diff <= 0) {
+                document.getElementById('countdown').innerHTML = '<div style="color: #dc3545; font-weight: 700;">CLOSED</div>';
+                document.getElementById('submitBtn').disabled = true;
+                return;
+            }
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').innerHTML = `
+                <div class="countdown-timer">${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}</div>
+                <div style="text-align: center; color: #666;">Time remaining</div>
+            `;
+        }
+
+        // Render functions
+        function render() {
+            renderEvents();
+            renderCurrentEvent();
+            renderPredictions();
+            renderLeaderboard();
+            
+            if (isAdmin) {
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminControls').style.display = 'block';
+                document.getElementById('adminContent').style.display = 'block';
+            }
+        }
+
+        function renderEvents() {
+            const list = document.getElementById('eventsList');
+            if (events.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">No events yet. Admin can create events!</div>';
+                return;
+            }
+
+            list.innerHTML = events.map(event => {
+                const isActive = event.id == currentEventId;
+                const isClosed = Date.now() >= event.deadline;
+                const deadline = new Date(event.deadline);
+                
+                return `
+                    <div class="event-card ${isActive ? 'active' : ''} ${isClosed ? 'closed' : ''}" onclick="selectEvent(${event.id})">
+                        <div class="event-title">${event.name}</div>
+                        <div class="event-meta">${event.question}</div>
+                        <div class="event-meta">Deadline: ${deadline.toLocaleString('en-US', { timeZone: 'Europe/Paris' })} CET</div>
+                        <span class="event-status ${event.status}">${event.status.toUpperCase()}</span>
+                        ${event.result ? `<div style="margin-top: 8px; font-weight: 600;">Result: ${event.result}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderCurrentEvent() {
+            const container = document.getElementById('currentEvent');
+            const event = getCurrentEvent();
+
+            if (!event) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">Select an event to make predictions</div>';
+                return;
+            }
+
+            const isClosed = Date.now() >= event.deadline;
+
+            container.innerHTML = `
+                <h2 class="section-title">${event.name}</h2>
+                <div style="background: #f0f4f8; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">${event.question}</div>
+                    <div id="countdown"></div>
+                </div>
+                ${!isClosed && event.status === 'open' ? `
+                    <div class="form-group">
+                        <label>Your Name:</label>
+                        <input type="text" id="participantName" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label>Your Prediction:</label>
+                        <input type="text" id="predictionAnswer" placeholder="Enter your answer">
+                    </div>
+                    <button class="btn btn-primary" id="submitBtn" onclick="submitPrediction()">Submit Prediction</button>
+                ` : ''}
+                ${event.status === 'completed' && event.result ? `
+                    <div style="background: #d4edda; padding: 20px; border-radius: 12px; border: 2px solid #28a745;">
+                        <div style="font-size: 20px; font-weight: 700; color: #155724;">✅ Correct Answer: ${event.result}</div>
+                    </div>
+                ` : ''}
+            `;
+
+            if (countdownInterval) clearInterval(countdownInterval);
+            if (!isClosed && event.status === 'open') {
+                updateCountdown();
+                countdownInterval = setInterval(updateCountdown, 1000);
+            }
+        }
+
+        function renderPredictions() {
+            const container = document.getElementById('predictionsList');
+            const event = getCurrentEvent();
+
+            if (!event || !predictions[event.id] || predictions[event.id].length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">No predictions yet</div>';
+                return;
+            }
+
+            const normalize = (str) => str.toLowerCase().trim().replace(/\s+/g, ' ');
+            const correctAnswer = event.result ? normalize(event.result) : null;
+
+            container.innerHTML = predictions[event.id].map(p => {
+                const isCorrect = correctAnswer && normalize(p.answer) === correctAnswer;
+                return `
+                    <div class="prediction-item ${isCorrect ? 'correct' : ''}">
+                        <span class="prediction-name">${isCorrect ? '🏆 ' : ''}${p.name}</span>
+                        <span class="prediction-answer">${p.answer}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboard');
+            
+            const sortedScores = Object.entries(scores)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            if (sortedScores.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">No scores yet. Complete events to earn points!</div>';
+                return;
+            }
+
+            container.innerHTML = sortedScores.map(([name, score], index) => {
+                const rank = index + 1;
+                const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+                return `
+                    <li class="leaderboard-item ${rank <= 3 ? 'top3' : ''}">
+                        <span class="leaderboard-rank">${medal || rank}</span>
+                        <span class="leaderboard-name">${name}</span>
+                        <span class="leaderboard-score">${score}</span>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        // Confetti animation
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.display = 'block';
+
+            const confettiPieces = [];
+            const confettiCount = 200;
+            const colors = ['#FFD700', '#FFA500', '#FF69B4', '#00CED1', '#FF6347', '#32CD32'];
+
+            for (let i = 0; i < confettiCount; i++) {
+                confettiPieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * confettiCount,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 10,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.05,
+                    tiltAngle: 0
+                });
+            }
+
+            let animationId;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confettiPieces.forEach((p, i) => {
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r / 2;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r / 4, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 4);
+                    ctx.stroke();
+                    p.tiltAngle += p.tiltAngleIncremental;
+                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                    p.x += Math.sin(p.d);
+                    p.tilt = Math.sin(p.tiltAngle - i / 3) * 15;
+                    if (p.y > canvas.height) {
+                        confettiPieces[i] = {
+                            x: Math.random() * canvas.width,
+                            y: -10,
+                            r: p.r,
+                            d: p.d,
+                            color: p.color,
+                            tilt: p.tilt,
+                            tiltAngleIncremental: p.tiltAngleIncremental,
+                            tiltAngle: p.tiltAngle
+                        };
+                    }
+                });
+                animationId = requestAnimationFrame(draw);
+            }
+            draw();
+            setTimeout(() => {
+                cancelAnimationFrame(animationId);
+                canvas.style.display = 'none';
+            }, 10000);
+        }
+
+        // Initialize
+        render();
+    </script>
+</body>
+</html>
